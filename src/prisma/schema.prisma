@@ -11,7 +11,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model doces{
+model Candy{
   id  String  @id @default(auto()) @map("_id") @db.ObjectId
   created_at  DateTime  @default(now())
   updated_at  DateTime  @default(now())
@@ -19,3 +19,30 @@ model doces{
   price String
   description  String?
 }
+
+
+model User{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    created_at  DateTime  @default(now())
+    updated_at  DateTime  @updatedAt
+    email String  @unique
+    firstName String?
+    surname String?
+    password String
+    tokens Token[]
+}
+
+
+model Token{
+  id  String @id @default(auto()) @map("_id") @db.ObjectId
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  // type TokenType
+  emailToken  String? @unique // only used for email tokens
+  valid Boolean @default(true)
+  expiration  DateTime
+
+  user User @relation(fields: [userId],references: [id], onDelete: Cascade)
+  userId String
+}
+
