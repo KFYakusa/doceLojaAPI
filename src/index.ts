@@ -4,14 +4,12 @@ import { HttpHeader } from './config/httpHeaderConfig'
 import cors from 'cors'
 import { generalRouter } from './routes/router'
 import { API_PORT } from './config/environment'
-// import {routes} from './routes'
 const app = express()
 
 app.use(express.json())
 
 app.use(cors())
 
-// app.use
 app.use(generalRouter)
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
