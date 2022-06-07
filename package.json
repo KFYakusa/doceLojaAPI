@@ -24,7 +24,8 @@
     "start": "node -r ./tsconfig-paths-bootstrap.js build/main",
     "dev": "nodemon -e ts,js --exec ts-node -r tsconfig-paths/register ./src/index.ts",
     "prebuild": "rimraf build",
-    "format": "prettier --write \"src/**/*.ts\" "
+    "format": "prettier --write \"src/**/*.ts\" ",
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "prisma": {
     "schema": "src/prisma/schema.prisma"

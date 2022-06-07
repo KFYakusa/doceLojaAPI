@@ -3,7 +3,6 @@ import { Request, Response } from 'express'
 import { candyService } from './candy.service'
 
 export class CandyController {
-
   async listCandies(req: Request, res: Response) {
     const queryParams = req.params
 
@@ -37,7 +36,9 @@ export class CandyController {
     const { name, description, price } = req.body
     const retornoDoce = await candyService.create(name, description, price)
     if (retornoDoce)
-      return res.status(500).json({ status: 500, message: 'something went wrong' })
+      return res
+        .status(500)
+        .json({ status: 500, message: 'something went wrong' })
     return res.status(201).json(retornoDoce)
   }
 
@@ -57,7 +58,10 @@ export class CandyController {
   async deleteCandy(req: Request, res: Response) {
     const { id } = req.params
     const candy = await candyService.delete(id)
-    if (Object.keys(candy).length === 0 || Object.keys(candy).includes('code')) {
+    if (
+      Object.keys(candy).length === 0 ||
+      Object.keys(candy).includes('code')
+    ) {
       res.status(400).json({ status: 400, message: ' wrong code' })
     } else {
       res.status(200).json(candy)
