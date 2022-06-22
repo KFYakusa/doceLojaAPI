@@ -1,42 +1,51 @@
-import { hashToken } from "@config/hashToken";
-import { prismaClient } from "@db/prisma";
+import { hashToken } from '@config/hashToken'
+import { prismaClient } from '@db/prisma'
 
-class AuthService{
-  addRefreshTokenToWhiteList({refreshToken,userId}:{refreshToken:string,userId:string}){
+class AuthService {
+  addRefreshTokenToWhiteList({
+    refreshToken,
+    userId
+  }: {
+    refreshToken: string
+    userId: string
+  }) {
+    const date = new Date()
+    date.setHours(date.getHours() + 4)
     return prismaClient.token.create({
-      data:{
-        emailToken:hashToken(refreshToken),
+      data: {
+        emailToken: hashToken(refreshToken),
         userId,
-        expiration:'8h'
+        expiration: date
       }
     })
   }
 
-  findRefreshTokenById(id:string){
+  findRefreshTokenById(id: string) {
     return prismaClient.token.findUnique({
-      where:{
+      where: {
         id
       }
     })
   }
 
-  deleteRefreshToken(id){
+  deleteRefreshToken(id) {
     return prismaClient.token.update({
-      where:{
+      where: {
         id
-      },data:{
-        valid:false
+      },
+      data: {
+        valid: false
       }
     })
   }
 
-  revokeTokens(userId){
+  revokeTokens(userId) {
     return prismaClient.token.updateMany({
-      where:{
+      where: {
         userId
       },
-      data:{
-        valid:false
+      data: {
+        valid: false
       }
     })
   }
@@ -44,4 +53,4 @@ class AuthService{
 
 const authService = new AuthService()
 
-export {authService}
+export { authService }

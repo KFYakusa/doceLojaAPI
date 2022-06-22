@@ -1,22 +1,22 @@
-import { User } from "@prisma/client";
-import { sign } from "jsonwebtoken";
-import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } from "./environment";
+import { User } from '@prisma/client'
+import { sign } from 'jsonwebtoken'
+import { IUser } from 'src/modules/user/user.interface'
+import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } from './environment'
 // import { User } from "src/modules/user/user.interface";
 
-
-function generateAccessToken(user:User){
-  return sign({userId: user.id},JWT_ACCESS_SECRET,{
-    expiresIn:'5m'
+function generateAccessToken(user: IUser) {
+  return sign({ userId: user.id }, JWT_ACCESS_SECRET, {
+    expiresIn: '5m'
   })
 }
 
-function generateRefreshToken(user:User){
-  return sign({userId: user.id},JWT_REFRESH_SECRET,{
-    expiresIn:'8h'
+function generateRefreshToken(user: IUser) {
+  return sign({ userId: user.id }, JWT_REFRESH_SECRET, {
+    expiresIn: '8h'
   })
 }
 
-function generateTokens(user:User){
+function generateTokens(user: IUser) {
   const accessToken = generateAccessToken(user)
   const refreshToken = generateRefreshToken(user)
 
@@ -26,4 +26,4 @@ function generateTokens(user:User){
   }
 }
 
-export {generateAccessToken, generateRefreshToken, generateTokens}
+export { generateAccessToken, generateRefreshToken, generateTokens }

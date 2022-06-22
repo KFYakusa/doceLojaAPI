@@ -16,54 +16,100 @@ export class AuthController {
         })
         return
       }
-      const alreadyExist = await userService.getUserByEmail(inputData.email)
+      const alreadyExist = await userService.findEmail(inputData.email)
       if (alreadyExist) {
         res.status(400).json({ message: ' Email already in use' })
         return
       }
 
-      const user = await userService.createUser(inputData)
+      const user = await userService.create(inputData)
+      if (!user) {
+        res.status(500).json({
+          message: '[ERROR] Could not Create user'
+        })
+        return
+      }
       const { accessToken, refreshToken } = generateTokens(user)
       await authService.addRefreshTokenToWhiteList({
         refreshToken,
-        userId: user.id
+        userId: user.id!
       })
       res.status(200).json({
         accessToken,
         refreshToken
       })
+      return
     } catch (err) {
       next(err)
     }
   }
 
-  async login(req:Request,res:Response,next:NextFunction){
-    try{
+  async login(req: Request, res: Response, next: NextFunction) {
+    try {
       const inputData: IAuth = req.body
 
-      if(!inputData.email || !inputData.password){
-        res.status(400).json({message: "required email and password"})
+      if (!inputData.email || !inputData.password) {
+        res.status(400).json({ message: 'required email and password' })
         return
       }
-      const doesExist = await userService.getUserByEmail(inputData.email)
-      if(!doesExist){
-        res.status(400).json({message:"Invalid login credentials"})
+      const doesExist = await userService.findEmail(inputData.email)
+      if (!doesExist) {
+        res.status(400).json({ message: 'Invalid login credentials' })
         return
       }
-      const validPassword = await compare(inputData.password, doesExist.password)
-      if(!validPassword){
-        res.status(400).json({message:"invalid login credentials"})
+      const validPassword = await compare(
+        inputData.password,
+        doesExist.password
+      )
+      if (!validPassword) {
+        res.status(400).json({ message: 'invalid login credentials' })
         return
       }
-      const {accessToken, refreshToken} = generateTokens(doesExist)
-      await authService.addRefreshTokenToWhiteList({refreshToken,userId:doesExist.id})
+      const { accessToken, refreshToken } = generateTokens(doesExist)
+      await authService.addRefreshTokenToWhiteList({
+        refreshToken,
+        userId: doesExist.id!
+      })
       res.status(200).json({
         accessToken,
         refreshToken
       })
-
-    }catch(e){
+    } catch (e) {
       next(e)
+    }
+  }
+  async logout(req: Request, res: Response, next: NextFunction) {
+    // TODO: get if user exist based on token
+    // TODO: revoke all tokens (authService.revokeTokens(userId))
+  }
+
+  async keepSession(req: Request, res: Response, next: NextFunction) {
+    const userId = req.userData!
+
+    try {
+      const user = await userService.find(userId)
+      if (!user) {
+        res.status(404).json({
+          message: 'No user was found with this credentials'
+        })
+        return
+      }
+
+      const { accessToken, refreshToken } = generateTokens(user)
+      await authService.revokeTokens(user.id)
+      await authService.addRefreshTokenToWhiteList({
+        refreshToken,
+        userId: user.id!
+      })
+      res.status(200).json({
+        accessToken,
+        refreshToken
+      })
+    } catch (e) {
+      res.status(500).json({
+        message: 'something went wrong renewing your tokens'
+      })
+      return
     }
   }
 }

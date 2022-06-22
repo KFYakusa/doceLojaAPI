@@ -26,8 +26,7 @@ model User{
     created_at  DateTime  @default(now())
     updated_at  DateTime  @updatedAt
     email String  @unique
-    firstName String?
-    surname String?
+    name String?
     password String
     tokens Token[]
 }

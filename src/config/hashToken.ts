@@ -1,6 +1,6 @@
-import { createHash } from "crypto";
+import { createHash } from 'crypto'
 
-function hashToken(token){
+function hashToken(token) {
   return createHash('sha512').update(token).digest('hex')
 }
-export {hashToken}
+export { hashToken }
