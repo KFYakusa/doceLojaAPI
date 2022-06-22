@@ -37,7 +37,7 @@ function isAuth(req: Request, res: Response, next: NextFunction) {
             if (decoded) {
               const comparison = prismaClient.token
                 .findFirst({
-                  where: { userId: decoded.userId, valid: true },
+                  where: { AND: [{ userId: decoded.userId }, { valid: true }] },
                   select: {
                     emailToken: true
                   }

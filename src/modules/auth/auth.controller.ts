@@ -78,9 +78,37 @@ export class AuthController {
       next(e)
     }
   }
+
   async logout(req: Request, res: Response, next: NextFunction) {
-    // TODO: get if user exist based on token
-    // TODO: revoke all tokens (authService.revokeTokens(userId))
+    const userId = req.userData!
+    try {
+      const user = await userService.find(userId)
+
+      if (!user) {
+        res.status(404).json({
+          message: 'User does not exist'
+        })
+        return
+      }
+
+      authService
+        .revokeTokens(user.id)
+        .then(deletedTokes =>
+          res.status(200).json({
+            message: 'Logout Successfull'
+          })
+        )
+        .catch(e => {
+          res.status(500).json({
+            message: 'Error deletig tokens'
+          })
+        })
+    } catch (e) {
+      res.status(500).json({
+        message: 'Something went wrong trying to logout',
+        info: e
+      })
+    }
   }
 
   async keepSession(req: Request, res: Response, next: NextFunction) {
