@@ -16,13 +16,13 @@ class CandyService {
     const where = {
       ...search
     }
-    const total = await prismaClient.doces.count({ where })
+    const total = await prismaClient.candy.count({ where })
     const pagination = {
       page,
       limit,
       totalPages: Math.ceil(total / limit)
     }
-    const candies = await prismaClient.doces.findMany({
+    const candies = await prismaClient.candy.findMany({
       where,
       take: pagination.limit,
       skip: pagination.limit * (pagination.page - 1),
@@ -46,7 +46,7 @@ class CandyService {
   async getSingle(id: string): Promise<ICandy> {
     const where = { id }
     try {
-      const candy = await prismaClient.doces.findUnique({
+      const candy = await prismaClient.candy.findUnique({
         where,
         select: {
           id: true,
@@ -73,7 +73,7 @@ class CandyService {
     price: string
   ): Promise<ICandy> {
     try {
-      const novoDoce = await prismaClient.doces.create({
+      const novoDoce = await prismaClient.candy.create({
         data: {
           name,
           description,
@@ -100,7 +100,7 @@ class CandyService {
     const where = { id }
     const { name, description, price } = old
     try {
-      const doceNew = await prismaClient.doces.update({
+      const doceNew = await prismaClient.candy.update({
         where,
         data: {
           name,
@@ -125,7 +125,7 @@ class CandyService {
   async delete(id: string): Promise<ICandy> {
     const where = { id }
     try {
-      const doce = await prismaClient.doces.delete({
+      const doce = await prismaClient.candy.delete({
         where,
         select: {
           id: true,
