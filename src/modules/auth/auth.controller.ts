@@ -140,4 +140,6 @@ export class AuthController {
       return
     }
   }
+
+  async recoverAccount(req: Request, res: Response, next: NextFunction) {}
 }

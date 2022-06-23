@@ -39,7 +39,7 @@ model Token{
   // type TokenType
   emailToken  String? @unique // only used for email tokens
   valid Boolean @default(true)
-  expiration  DateTime
+  expire_at  DateTime
 
   user User @relation(fields: [userId],references: [id], onDelete: Cascade)
   userId String

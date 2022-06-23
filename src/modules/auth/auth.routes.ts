@@ -9,5 +9,6 @@ authRouter.post('/signup', authController.signup)
 authRouter.post('/login', authController.login)
 authRouter.post('/logout', isAuth, authController.logout)
 authRouter.post('/keepSession', isAuth, authController.keepSession)
+authRouter.post('/recoverAccount', authController.recoverAccount)
 
 export { authRouter }

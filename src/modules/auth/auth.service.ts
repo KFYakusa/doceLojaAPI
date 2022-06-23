@@ -15,7 +15,7 @@ class AuthService {
       data: {
         emailToken: hashToken(refreshToken),
         userId,
-        expiration: date
+        expire_at: date
       }
     })
   }
